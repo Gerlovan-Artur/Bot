@@ -1,53 +1,72 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createBot = void 0;
 const node_telegram_bot_api_1 = __importDefault(require("node-telegram-bot-api"));
-const telegramHandlers = __importStar(require("../handlers/telegramHandlers"));
 const config_1 = __importDefault(require("../config/config"));
 const createBot = () => {
     const bot = new node_telegram_bot_api_1.default(config_1.default.telegramToken, { polling: true });
-    bot.on('message', (msg) => __awaiter(void 0, void 0, void 0, function* () {
-        try {
-            yield telegramHandlers.handleMessage(msg);
-        }
-        catch (error) {
-            console.error('Error handling message:', error.message);
-        }
-    }));
+    bot.onText(/\/start/, (msg) => {
+        const chatId = msg.chat.id;
+        const keyboard = [
+            [{ text: 'Create new lead in CRM' }],
+            [{ text: 'Other' }],
+        ];
+        bot.sendMessage(chatId, 'Выберите действие:', {
+            reply_markup: {
+                keyboard,
+                one_time_keyboard: true,
+            },
+        });
+    });
+    bot.onText(/Create new lead in CRM/, (msg) => {
+        const chatId = msg.chat.id;
+        const crmSubjects = ['Тема1', 'Тема2', 'Тема3'];
+        const subjectsKeyboard = crmSubjects.map(subject => [{ text: subject }]);
+        bot.sendMessage(chatId, 'Выберите тему для нового лида:', {
+            reply_markup: {
+                keyboard: subjectsKeyboard,
+                one_time_keyboard: true,
+            },
+        });
+    });
+    bot.onText(/Тема1|Тема2|Тема3/, (msg) => {
+        const chatId = msg.chat.id;
+        const selectedSubject = msg.text;
+        const funnelTypes = ['Type1', 'Type2', 'Type3'];
+        const funnelTypesKeyboard = funnelTypes.map(funnel => [{ text: funnel }]);
+        bot.sendMessage(chatId, 'Выберите funnelTypes:', {
+            reply_markup: {
+                keyboard: funnelTypesKeyboard,
+                one_time_keyboard: true,
+            },
+        });
+    });
+    bot.onText(/Type1|Type2|Type3/, (msg) => {
+        const chatId = msg.chat.id;
+        const selectedFunnelType = msg.text;
+        const prioritys = ['Low', 'Normal', 'Hi'];
+        const priorityKeyboard = prioritys.map(priority => [{ text: priority }]);
+        bot.sendMessage(chatId, 'Выберите priority:', {
+            reply_markup: {
+                keyboard: priorityKeyboard,
+                one_time_keyboard: true,
+            },
+        });
+    });
+    bot.onText(/Responsible1|Responsible2|Responsible3/, (msg) => {
+        const chatId = msg.chat.id;
+        const selectedPriority = msg.text;
+        const responsibles = ['Responsible1', 'Responsible2', 'Responsible3'];
+        const responsibleKeyboard = responsibles.map(responsible => [{ text: responsible }]);
+        bot.sendMessage(chatId, 'Выберите responsible:', {
+            reply_markup: {
+                keyboard: responsibleKeyboard,
+                one_time_keyboard: true,
+            },
+        });
+    });
 };
 exports.createBot = createBot;
