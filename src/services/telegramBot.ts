@@ -8,12 +8,13 @@ import responsibleHandler from '../handlers/responsibleHandler'
 
 const createBot = (): void => {
   const bot = new TelegramBot(config.telegramToken, { polling: true })
+  const state = { currentStep: 'start' }
 
-  bot.onText(/\/start/, (msg) => { startHandler(bot, msg) })
-  bot.onText(/Create new lead in CRM/, (msg) => { createLeadHandler(bot, msg) })
-  bot.onText(/Theme1|Theme2|Theme3/, (msg) => { funnelTypeHandler(bot, msg) })
-  bot.onText(/Type1|Type2|Type3/, (msg) => { priorityHandler(bot, msg) })
-  bot.onText(/Responsible1|Responsible2|Responsible3/, (msg) => { responsibleHandler(bot, msg) })
+  bot.onText(/\/start/, async (msg) => { await startHandler(bot, msg, state) })
+  bot.onText(/Create new lead in CRM/, async (msg) => { await createLeadHandler(bot, msg, state) })
+  bot.onText(/Theme1|Theme2|Theme3/, async (msg) => { await funnelTypeHandler(bot, msg, state) })
+  bot.onText(/Type1|Type2|Type3/, async (msg) => { await priorityHandler(bot, msg, state) })
+  bot.onText(/Responsible1|Responsible2|Responsible3/, async (msg) => { await responsibleHandler(bot, msg, state) })
 }
 
 export { createBot }
