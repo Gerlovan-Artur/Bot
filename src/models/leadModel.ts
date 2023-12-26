@@ -1,4 +1,4 @@
 export interface Lead {
-  chatId: number;
-  messageText?: string;
+  chatId: number
+  messageText?: string
 }

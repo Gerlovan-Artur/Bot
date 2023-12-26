@@ -1,5 +1,5 @@
 import { createBot } from './src/services/telegramBot'
-
+require('./bot');
 const startApplication = async (): Promise<void> => {
   try {
     createBot()

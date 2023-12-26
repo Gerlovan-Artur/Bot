@@ -13,20 +13,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createLead = void 0;
-const axios_1 = __importDefault(require("axios"));
-const config_1 = __importDefault(require("../config/config"));
-const axiosConfig = axios_1.default.create({
-    baseURL: config_1.default.crmApiUrl,
-    headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${config_1.default.crmToken}`,
-    },
-});
+const api_1 = __importDefault(require("../config/api"));
 const createLead = (lead) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const response = yield axiosConfig.post('/leads', {
+        const response = yield api_1.default.post('/leads', {
             chatId: lead.chatId,
-            messageText: lead.messageText,
+            messageText: lead.messageText
         });
         if (response.data.success) {
             console.log('Lead created successfully:', response.data.leadId);
