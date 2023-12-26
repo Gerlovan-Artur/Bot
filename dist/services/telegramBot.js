@@ -28,5 +28,37 @@ const createBot = () => {
     bot.onText(/Theme1|Theme2|Theme3/, (msg) => __awaiter(void 0, void 0, void 0, function* () { yield (0, funnelTypeHandler_1.default)(bot, msg, state); }));
     bot.onText(/Type1|Type2|Type3/, (msg) => __awaiter(void 0, void 0, void 0, function* () { yield (0, priorityHandler_1.default)(bot, msg, state); }));
     bot.onText(/Responsible1|Responsible2|Responsible3/, (msg) => __awaiter(void 0, void 0, void 0, function* () { yield (0, responsibleHandler_1.default)(bot, msg, state); }));
+    // Обработка всех входящих сообщений
+    bot.on('callback_query', (callbackQuery) => __awaiter(void 0, void 0, void 0, function* () {
+        var _a;
+        if (!((_a = callbackQuery.message) === null || _a === void 0 ? void 0 : _a.chat)) {
+            console.error('Некорректный callbackQuery:', callbackQuery);
+            return;
+        }
+        const chatId = callbackQuery.message.chat.id;
+        const messageId = callbackQuery.message.message_id;
+        const data = callbackQuery.data;
+        const currentText = callbackQuery.message.text || ''; // Получаем текущий текст или пустую строку
+        const newText = `${currentText}\nВыбранный вариант: ${data}`;
+        // Проверяем, какую кнопку выбрал пользователь
+        if (data === 'createLead') {
+            // Вызываем обработчик createLeadHandler
+            // await bot.sendMessage(chatId, 'Создаём новый Lead.')
+            yield (0, createLeadHandler_1.default)(bot, callbackQuery.message, state);
+            // Редактируем сообщение после обработки коллбек-запроса
+            // const newText = 'Новый текст сообщения после обработки callback-запроса'
+            yield bot.editMessageText(newText, { chat_id: chatId, message_id: messageId });
+        }
+        else if (data === 'funnelType') {
+            // Вызываем обработчик funnelTypeHandler
+            yield (0, funnelTypeHandler_1.default)(bot, callbackQuery.message, state);
+            // Редактируем сообщение после обработки коллбек-запроса
+            // const newText = 'Новый текст сообщения после обработки callback-запроса для второго варианта'
+            yield bot.editMessageText(newText, { chat_id: chatId, message_id: messageId });
+        }
+        else if (data === 'otherOption') {
+            // Обработка других вариантов, если необходимо
+        }
+    }));
 };
 exports.createBot = createBot;
