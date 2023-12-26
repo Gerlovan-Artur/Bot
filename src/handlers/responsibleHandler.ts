@@ -2,8 +2,8 @@ import type TelegramBot from 'node-telegram-bot-api'
 
 const responsibleHandler = async (bot: TelegramBot, msg: TelegramBot.Message, state: any): Promise<void> => {
   try {
-    const chatId = msg.chat.id;
-    const text = msg.text;
+    const chatId = msg.chat.id
+    const text = msg.text
 
     const responsibles = ['Responsible1', 'Responsible2', 'Responsible3']
     const responsibleKeyboard = responsibles.map(responsible => [{ text: responsible }])
