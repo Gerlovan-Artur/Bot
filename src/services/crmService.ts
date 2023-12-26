@@ -1,32 +1,23 @@
-import axios, { AxiosInstance } from 'axios';
-import  config  from '../config/config';
-import { Lead } from '../models/leadModel';
+import { type Lead } from '../models/leadModel'
+import instance from '../config/api'
 
-const axiosConfig: AxiosInstance = axios.create({
-  baseURL: config.crmApiUrl,
-  headers: {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${config.crmToken}`,
-  },
-});
-
-export const createLead = async (lead: Lead) => {
+export const createLead = async (lead: Lead): Promise<void> => {
   try {
-    const response = await axiosConfig.post('/leads', {
+    const response = await instance.post('/leads', {
       chatId: lead.chatId,
-      messageText: lead.messageText,
-    });
+      messageText: lead.messageText
+    })
 
     if (response.data.success) {
-      console.log('Lead created successfully:', response.data.leadId);
+      console.log('Lead created successfully:', response.data.leadId)
     } else {
-      console.error('Failed to create lead:', response.data.error);
+      console.error('Failed to create lead:', response.data.error)
     }
   } catch (error) {
     if (typeof error === 'string') {
-      console.error('Error creating lead:', error);
+      console.error('Error creating lead:', error)
     } else {
-      console.error('Error creating lead:', JSON.stringify(error));
+      console.error('Error creating lead:', JSON.stringify(error))
     }
   }
-};
+}
